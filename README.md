@@ -34,3 +34,7 @@
 
   uv run train --algo ppo --task t800_motion_tracking --sim mujoco 会使用普通的
   mujoco.yaml，不是 t800_long_adaptive。
+
+
+
+uv run eval     --algo ppo     --task t800_motion_tracking     --sim mujoco     --load-run t800_7000_simplified     --render-mode record     algo.checkpoint=6999     training.play_steps=1000     training.play_env_num=1     algo.num_envs=1     env.adaptive_chunk_size=false     env.commands.motion.params.sampling_mode=start
