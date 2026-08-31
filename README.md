@@ -50,3 +50,84 @@
     algo.num_envs=1 \
     env.adaptive_chunk_size=false \
     env.commands.motion.params.sampling_mode=adaptive
+
+    ------------------------------------------------------------------
+
+    uv run eval
+--algo ppo
+--task t800_motion_tracking
+--sim mujoco
+--load-run t800_reference
+--render-mode record
+algo.checkpoint=18000
+algo.empirical_normalization=false
+training.play_steps=1000
+training.play_env_num=1
+algo.num_envs=1
+env.adaptive_chunk_size=false
+env.commands.motion.params.sampling_mode=adaptive
+
+
+  MUJOCO_GL=egl uv run eval \
+    --algo ppo \
+    --task t800_motion_tracking \
+    --sim mujoco \
+    --load-run adaptive \
+    --render-mode record \
+    algo.checkpoint=23000 \
+    training.play_steps=1000 \
+    training.play_env_num=1 \
+    algo.num_envs=1 \
+    env.adaptive_chunk_size=false \
+    env.max_episode_seconds=18.0 \
+    env.commands.motion.params.motion_file=/home/pc825/UniLab/src/unilab/assets/motions/t800/dance1_subject2_t800_first18s_mujoco.npz \
+    env.commands.motion.params.sampling_mode=adaptive
+    
+    
+  uv run eval \
+    --algo ppo \
+    --task t800_motion_tracking \
+    --sim mujoco \
+    --load-run t800_reference \
+    --render-mode record \
+    algo.checkpoint=29999 \
+    algo.empirical_normalization=false \
+    training.play_steps=1000 \
+    training.play_env_num=1 \
+    algo.num_envs=1 \
+    env.adaptive_chunk_size=false \
+    env.commands.motion.params.sampling_mode=adaptive
+
+
+  MUJOCO_GL=egl uv run scripts/motion/replay_npz.py \
+    --model_file src/unilab/assets/robots/t800/scene_flat.xml \
+    --npz_file src/unilab/assets/motions/t800/dance1_subject2_t800_first18s_mujoco.npz \
+    --loop
+    
+  MUJOCO_GL=egl uv run scripts/motion/replay_npz.py \
+    --model_file src/unilab/assets/robots/t800/scene_flat.xml \
+    --npz_file src/unilab/assets/motions/t800/dance_t800.npz \
+    --loop
+
+
+  MUJOCO_GL=egl uv run scripts/motion/replay_npz.py \
+    --model_file src/unilab/assets/robots/g1/scene_flat.xml \
+    --npz_file src/unilab/assets/motions/g1/dance1_subject2_part.npz \
+    --loop
+    
+cd /home/pc825/UniLab
+
+  mkdir -p logs/rsl_rl_ppo/T800MotionTracking/t800_reference
+
+  TORCH_NUM_THREADS=1 \
+  OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 \
+  OPENBLAS_NUM_THREADS=1 \
+  /home/pc825/.codex/.local/bin/uv run --no-sync scripts/train_rsl_rl.py \
+    task=t800_motion_tracking/t800_reference \
+    training.no_play=true \
+    training.log_dir=logs/rsl_rl_ppo/T800MotionTracking/t800_reference \
+    algo.num_envs=128 \
+    algo.max_iterations=15000 \
+    algo.save_interval=500
+
