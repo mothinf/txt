@@ -127,3 +127,15 @@ cd /home/pc825/UniLab
     algo.max_iterations=15000 \
     algo.save_interval=500
 
+  cd /home/pc825/UniLab
+
+  TORCH_NUM_THREADS=1 \
+  OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 \
+  uv run --no-sync scripts/train_rsl_rl.py \
+    task=t800_motion_tracking/t800_long_adaptive \
+    env.commands.motion.params.motion_file=/home/pc825/UniLab/src/unilab/assets/motions/t800/
+    dance1_subject2_t800_first18s_mujoco.npz \
+    training.no_play=true \
+    training.log_dir=logs/rsl_rl_ppo/T800MotionTracking/t800_long_adaptive_dance1_first18s \
+    algo.num_envs=128
