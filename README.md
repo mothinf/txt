@@ -171,3 +171,30 @@ cd /home/pc825/UniLab
 
   jq '.config.algo.max_iterations, .config.env.commands.motion.params.motion_file' \
     logs/rsl_rl_ppo/T800MotionTracking/t800_long_adaptive_dance1_first18s/run_config.json
+
+
+      电脑 1：start + 全扰动
+
+  cd /home/pc825/UniLab
+
+  mkdir -p logs/rsl_rl_ppo/T800MotionTracking/diag_start_full_perturb
+
+  TORCH_NUM_THREADS=1 \
+  OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 \
+  OPENBLAS_NUM_THREADS=1 \
+  .venv/bin/python scripts/train_rsl_rl.py \
+    task=t800_motion_tracking/t800_long_adaptive \
+    training.no_play=true \
+    training.log_dir=logs/rsl_rl_ppo/T800MotionTracking/diag_start_full_perturb \
+    algo.seed=1 \
+    algo.num_envs=128 \
+    algo.max_iterations=3000 \
+    algo.save_interval=500 \
+    env.ctrl_dt=0.02 \
+    env.max_episode_seconds=20.0 \
+    env.commands.motion.params.sampling_mode=start \
+    env.terminations.anchor_pos.params.threshold=0.35 \
+    env.terminations.ee_body_pos.params.threshold=0.35
+
+  这里没有把 perturbation 设成零，因此继承 long_adaptive 的完整初始扰动。
