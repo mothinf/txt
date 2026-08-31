@@ -212,3 +212,18 @@ cd /home/pc825/UniLab
     task=t800_motion_tracking/t800_long_adaptive \
     training.no_play=true \
     training.log_dir=logs/rsl_rl_ppo/T800MotionTracking/t800_long_adaptive_1024
+
+    cd /home/pc825/UniLab
+
+# 先等 model_6000.pt 或更晚的 checkpoint 写完，再 Ctrl+C 停止原进程
+TORCH_NUM_THREADS=1 \
+OMP_NUM_THREADS=1 \
+MKL_NUM_THREADS=1 \
+OPENBLAS_NUM_THREADS=1 \
+/home/pc825/.codex/.local/bin/uv run --no-sync scripts/train_rsl_rl.py \
+  task=t800_motion_tracking/t800_long_adaptive \
+  training.no_play=true \
+  training.log_dir=logs/rsl_rl_ppo/T800MotionTracking/t800_long_adaptive_1024 \
+  algo.load_run=/home/pc825/UniLab/logs/rsl_rl_ppo/T800MotionTracking/t800_long_adaptive_1024/model_6000.pt \
+  algo.max_iterations=14000 \
+  algo.save_interval=500
