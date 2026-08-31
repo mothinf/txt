@@ -126,16 +126,48 @@ cd /home/pc825/UniLab
     algo.num_envs=128 \
     algo.max_iterations=15000 \
     algo.save_interval=500
+    
+• 151 不是 T800 配置的正常上限。T800 的 t800_long_adaptive.yaml 设置的是 algo.max_iterations: 10000；151
+  来自 Go1/Go2 默认任务配置。通常说明实际运行时没有成功加载 T800 任务，回退到了默认任务，或者命令行被其他
+  参数覆盖了。
+
+  先在另一台电脑执行这个检查命令：
+
+  cd /home/pc825/UniLab
+
+  uv run --no-sync python scripts/train_rsl_rl.py \
+    task=t800_motion_tracking/t800_long_adaptive \
+    env.commands.motion.params.motion_file=/home/pc825/UniLab/src/unilab/assets/motions/t800/
+    dance1_subject2_t800_first18s_mujoco.npz \
+    training.no_play=true \
+    --cfg job --resolve 2>&1 | rg 'max_iterations|motion_file|task_name|sim_backend'
+
+  应看到：
+
+  max_iterations: 10000
+  task_name: T800MotionTracking
+  sim_backend: mujoco
+  motion_file: /home/pc825/UniLab/src/unilab/assets/motions/t800/dance1_subject2_t800_first18s_mujoco.npz
+
+  确认无误后，用下面这条训练，并显式锁定 10000 轮：
 
   cd /home/pc825/UniLab
 
   TORCH_NUM_THREADS=1 \
   OMP_NUM_THREADS=1 \
   MKL_NUM_THREADS=1 \
-  uv run --no-sync scripts/train_rsl_rl.py \
+  uv run --no-sync python scripts/train_rsl_rl.py \
     task=t800_motion_tracking/t800_long_adaptive \
     env.commands.motion.params.motion_file=/home/pc825/UniLab/src/unilab/assets/motions/t800/
     dance1_subject2_t800_first18s_mujoco.npz \
     training.no_play=true \
+    training.num_timesteps=null \
     training.log_dir=logs/rsl_rl_ppo/T800MotionTracking/t800_long_adaptive_dance1_first18s \
-    algo.num_envs=128
+    algo.num_envs=128 \
+    algo.max_iterations=10000 \
+    algo.save_interval=500
+
+  训练后可检查实际生效配置：
+
+  jq '.config.algo.max_iterations, .config.env.commands.motion.params.motion_file' \
+    logs/rsl_rl_ppo/T800MotionTracking/t800_long_adaptive_dance1_first18s/run_config.json
