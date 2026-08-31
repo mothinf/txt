@@ -198,3 +198,17 @@ cd /home/pc825/UniLab
     env.terminations.ee_body_pos.params.threshold=0.35
 
   这里没有把 perturbation 设成零，因此继承 long_adaptive 的完整初始扰动。
+
+
+  cd /home/pc825/UniLab
+
+  mkdir -p logs/rsl_rl_ppo/T800MotionTracking/t800_long_adaptive_1024
+
+  TORCH_NUM_THREADS=1 \
+  OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 \
+  OPENBLAS_NUM_THREADS=1 \
+  /home/pc825/.codex/.local/bin/uv run --no-sync scripts/train_rsl_rl.py \
+    task=t800_motion_tracking/t800_long_adaptive \
+    training.no_play=true \
+    training.log_dir=logs/rsl_rl_ppo/T800MotionTracking/t800_long_adaptive_1024
