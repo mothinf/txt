@@ -227,3 +227,20 @@ OPENBLAS_NUM_THREADS=1 \
   algo.load_run=/home/pc825/UniLab/logs/rsl_rl_ppo/T800MotionTracking/t800_long_adaptive_1024/model_6000.pt \
   algo.max_iterations=14000 \
   algo.save_interval=500
+
+
+  uv run eval \
+    --algo ppo \
+    --task t800_motion_tracking \
+    --sim mujoco \
+    --load-run t800_long_adaptive_1024 \
+    --render-mode record \
+    algo.checkpoint=10000 \
+    algo.empirical_normalization=true \
+    training.sim2sim_strict=false \
+    training.play_env_num=1 \
+    training.play_steps=1053 \
+    training.render_spacing=2.0 \
+    env.max_episode_seconds=22.0 \
+    env.commands.motion.params.motion_file=motions/t800/dance_t800.npz \
+    env.commands.motion.params.sampling_mode=start
