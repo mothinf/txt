@@ -47,3 +47,17 @@ uv run --no-sync python scripts/train_rsl_rl.py \
 这份配置是：**134 维 actor、1024 环境、3 子步、修正后的18秒 NPZ、完整官方 DR**。
 
 如果准备直接从头跑 **15000 轮**，将上面两处 `5000` 都改为 `15000`。若已经完成5000轮后再续训，需显式加载 checkpoint；单纯修改轮数重跑会重新开始训练。
+
+
+
+cd UniLab-t800-dr-tuning
+
+uv run --no-sync python scripts/train_rsl_rl.py \
+  task=t800_motion_tracking/mujoco_wostate_dr_ref_v2 \
+  env.sim_dt=0.005 \
+  algo.seed=1 \
+  algo.num_envs=1024 \
+  algo.max_iterations=40000 \
+  training.device=cuda \
+  training.no_play=true \
+  training.log_dir=logs/rsl_rl_ppo/T800MotionTracking/t800_wostate_ref_v2_dr_1024_4substeps_18s_40000
